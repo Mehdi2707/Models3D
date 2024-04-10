@@ -9,8 +9,19 @@ export function ModelDetails () {
 
     const [model, setModel] = useState(null);
     const { id } = useParams();
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        const jwtPayload = JSON.parse(atob(token.split('.')[1]));
+        const jwtRole = jwtPayload.roles;
+
+        if (jwtRole.includes("ROLE_ADMIN")) {
+            setIsAdmin(true);
+        } else {
+            setIsAdmin(false);
+        }
+
         ModelsService.getModel(id).then(model => setModel(model))
     }, [id]);
 
@@ -23,9 +34,11 @@ export function ModelDetails () {
                         <div className="card hoverable">
                             <div className="card-image">
                                 {/*<img src={pokemon.picture} alt={pokemon.name} style={{width: '250px', margin: '0 auto'}}/>*/}
-                                <Link to={`/models/edit/${model.id}`} className="btn btn-floating halfway-fab waves-effect waves-light">
-                                    <i className="material-icons">edit</i>
-                                </Link>
+                                {isAdmin && (
+                                    <Link to={`/models/edit/${model.id}`} className="btn btn-floating halfway-fab waves-effect waves-light">
+                                        <i className="material-icons">edit</i>
+                                    </Link>
+                                )}
                             </div>
                             <div className="card-stacked">
                                 <div className="card-content">

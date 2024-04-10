@@ -34,12 +34,12 @@ function App() {
                           </PrivateRoute>
                       }/>
                       <Route path="models/edit/:id" element={
-                          <PrivateRoute>
+                          <PrivateRoute role="ROLE_ADMIN">
                               <ModelEdit />
                           </PrivateRoute>
                       }/>
                       <Route path="model/add" element={
-                          <PrivateRoute>
+                          <PrivateRoute role="ROLE_ADMIN">
                               <ModelAdd />
                           </PrivateRoute>
                       }/>

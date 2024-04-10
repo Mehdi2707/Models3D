@@ -21,9 +21,9 @@ export function ModelCard ({model, borderColor = '#009688'}) {
     return <div className="col s6 m4" onClick={() => goToModel(model.id)} onMouseEnter={showBorder} onMouseLeave={hideBorder}>
         <div className="card horizontal" style={{borderColor: color}}>
             <div className="card-image">
-                {model.images.map(image => (
-                    <img key={image.id} src={image.name} alt={model.title} />
-                ))}
+                {model.images.length > 0 && (
+                    <img src={model.images[0].name} alt={model.title} />
+                )}
             </div>
             <div className="card-stacked">
                 <div className="card-content">

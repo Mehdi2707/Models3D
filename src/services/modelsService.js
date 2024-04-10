@@ -2,11 +2,15 @@ export default class ModelsService {
 
     static isDev = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development');
 
-    static getModels() {
+    static getModels(page) {
         if(this.isDev) {
             const token = localStorage.getItem('token');
+            let url = 'http://localhost:8000/api/models';
+            
+            if(page)
+                url += '?page=' + page;
 
-            return fetch('http://localhost:8000/api/models', {
+            return fetch(url, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -121,7 +125,7 @@ export default class ModelsService {
         if(this.isDev) {
             const token = localStorage.getItem('token');
 
-            return fetch(`http://localhost:8000/api/models?q=${term}`, {
+            return fetch(`http://localhost:8000/api/models?term=${term}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -139,7 +143,7 @@ export default class ModelsService {
 
     }
 
-    static handleError(error) {alert(error)
+    static handleError(error) {
         console.error(error);
     }
 }

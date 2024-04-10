@@ -22,7 +22,7 @@ export function ModelCard ({model, borderColor = '#009688'}) {
         <div className="card horizontal" style={{borderColor: color}}>
             <div className="card-image">
                 {model.images.map(image => (
-                    <img key={model.slug} src={image.name} alt={model.title} />
+                    <img key={image.id} src={image.name} alt={model.title} />
                 ))}
             </div>
             <div className="card-stacked">

@@ -1,9 +1,9 @@
 import './modelCard.css'
-import {useState} from "react";
-import {formatDate} from "../helpers/formatDate.js";
-import {useNavigate} from 'react-router-dom'
+import { useState } from "react";
+import { formatDate } from "../helpers/formatDate.js";
+import { useNavigate } from 'react-router-dom'
 
-export function ModelCard ({model, borderColor = '#009688'}) {
+export function ModelCard({ model, borderColor = '#009688' }) {
 
     const [color, setColor] = useState()
     const history = useNavigate()
@@ -19,10 +19,10 @@ export function ModelCard ({model, borderColor = '#009688'}) {
     }
 
     return <div className="col s6 m4" onClick={() => goToModel(model.id)} onMouseEnter={showBorder} onMouseLeave={hideBorder}>
-        <div className="card horizontal" style={{borderColor: color}}>
+        <div className="card horizontal" style={{ borderColor: color }}>
             <div className="card-image">
                 {model.images.length > 0 && (
-                    <img src={model.images[0].name} alt={model.title} />
+                    <img src={'http://localhost:8000/assets/uploads/models/mini/400x400-' + model.images[0].name} alt={model.title} />
                 )}
             </div>
             <div className="card-stacked">
@@ -31,9 +31,6 @@ export function ModelCard ({model, borderColor = '#009688'}) {
                     <p>{model.file}</p>
                     <p>{model.description}</p>
                     <p><small>{formatDate(model.createdAt)}</small></p>
-                    {/*{model.types.map(type => (*/}
-                    {/*    <span key={type} className={formatType(type)}>{type}</span>*/}
-                    {/*))}*/}
                 </div>
             </div>
         </div>

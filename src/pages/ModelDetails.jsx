@@ -33,7 +33,9 @@ export function ModelDetails () {
                         <h2 className="header center">{ model.title }</h2>
                         <div className="card hoverable">
                             <div className="card-image">
-                                {/*<img src={pokemon.picture} alt={pokemon.name} style={{width: '250px', margin: '0 auto'}}/>*/}
+                                {model.images.map(image => (
+                                    <img key={image.id} src={'http://localhost:8000/assets/uploads/models/' + image.name} alt={image.name} style={{width: '250px', margin: '0 auto'}}/>
+                                ))}
                                 {isAdmin && (
                                     <Link to={`/models/edit/${model.id}`} className="btn btn-floating halfway-fab waves-effect waves-light">
                                         <i className="material-icons">edit</i>
@@ -45,24 +47,16 @@ export function ModelDetails () {
                                     <table className="bordered striped">
                                         <tbody>
                                         <tr>
-                                            <td>Nom</td>
+                                            <td>Titre</td>
                                             <td><strong>{ model.title }</strong></td>
                                         </tr>
                                         <tr>
-                                            <td>Points de vie</td>
+                                            <td>Description</td>
                                             <td><strong>{ model.description }</strong></td>
                                         </tr>
                                         <tr>
-                                            <td>Dégâts</td>
+                                            <td>Fichier</td>
                                             <td><strong>{ model.file }</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Types</td>
-                                            <td>
-                                                {/*{pokemon.types.map(type => (*/}
-                                                {/*    <span key={type} className={formatType(type)}>{type}</span>*/}
-                                                {/*))}*/}
-                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Date de création</td>

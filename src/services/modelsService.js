@@ -57,11 +57,19 @@ export default class ModelsService {
         if(this.isDev) {
             const token = localStorage.getItem('token');
 
+            const formData = new FormData();
+            formData.append('title', model.title);
+            formData.append('description', model.description);
+            formData.append('file', model.file)
+            model.images.forEach((image, index) => {
+                formData.append(`images[${index}]`, image);
+            });
+
             return fetch(`http://localhost:8000/api/models/${model.id}`, {
-                method: 'PUT',
-                body: JSON.stringify(model),
+                method: 'POST',
+                body: formData,
                 headers: {
-                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/json',
                     "Authorization": `Bearer ${token}`
                 }
             })
@@ -99,15 +107,45 @@ export default class ModelsService {
         });
     }
 
+    static deleteImage(id) {
+        if(this.isDev) {
+            const token = localStorage.getItem('token');
+
+            return fetch(`http://localhost:8000/api/images/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                // .then(response => response.json())
+                .catch(error => this.handleError(error));
+        }
+
+        return new Promise(resolve => {
+            const { id } = pokemon;
+            this.pokemons = this.pokemons.filter(pokemon => pokemon.id !== id);
+            resolve({});
+        });
+    }
+
     static addModel(model) {
         if(this.isDev) {
             const token = localStorage.getItem('token');
 
+            const formData = new FormData();
+            formData.append('title', model.title);
+            formData.append('description', model.description);
+            formData.append('file', model.file)
+            model.images.forEach((image, index) => {
+                formData.append(`images[${index}]`, image);
+            });
+
             return fetch(`http://localhost:8000/api/models`, {
                 method: 'POST',
-                body: JSON.stringify(model),
+                body: formData,
                 headers: {
-                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/json',
                     "Authorization": `Bearer ${token}`
                 }
             })

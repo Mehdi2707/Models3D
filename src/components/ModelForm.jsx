@@ -7,10 +7,10 @@ export function ModelForm({model, isEditForm}) {
     const history = useNavigate()
 
     const [form, setForm] = useState({
-        // images: { value: model.images, isValid: true },
         title: { value: model.title, isValid: true },
         description: { value: model.description, isValid: true },
         file: { value: model.file, isValid: true },
+        images: { value: [], isValid: true }
     })
 
     const handleInputChange = (e) => {
@@ -21,15 +21,22 @@ export function ModelForm({model, isEditForm}) {
         setForm({...form, ...newField})
     }
 
+    const handleImageChange = (e) => {
+        const imageFiles = e.target.files;
+        const newField = {['images']: {value: Array.from(imageFiles)}};
+
+        setForm({...form, ...newField})
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
         const isFormValid = validateForm()
 
         if(isFormValid) {
-            // model.images = form.images.value
             model.title = form.title.value
             model.description = form.description.value
             model.file = form.file.value
+            model.images = form.images.value
 
             isEditForm ? updateModel() : addModel()
         }
@@ -43,34 +50,33 @@ export function ModelForm({model, isEditForm}) {
         ModelsService.updateModel(model).then(() => history(`/models/${model.id}`))
     }
 
-    const isAddForm = () => {
-        return !isEditForm
-    }
-
     const validateForm = () => {
         let newForm = form
 
-        // if(isAddForm())
-        // {
-        //     const start = "https://assets.pokemon.com/assets/cms2/img/pokedex/detail"
-        //     const end = ".png"
-        //
-        //     if(!form.images.value.startsWith(start) || !form.images.value.endsWith(end))
-        //     {
-        //         const errorMsg = "L'url n'est pas valide."
-        //         const newField = { value: form.images.value, error: errorMsg, isValid: false }
-        //         newForm = { ...form, ...{ images: newField } }
-        //     }
-        //     else
-        //     {
-        //         const newField = { value: form.images.value, error: '', isValid: true }
-        //         newForm = { ...form, ...{ images: newField } }
-        //     }
-        // }
+        const allowedExtension = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+
+        if (form.images.value && form.images.value.length > 0)
+        {
+            let hasInvalidImage = false;
+            form.images.value.forEach(image => {
+                if(allowedExtension.indexOf(image.type) === -1)
+                {
+                    const errorMsg = "Le type de fichier n'est pas valide. (" + image.name + ")"
+                    const newField = { value: image, error: errorMsg, isValid: false }
+                    newForm = { ...form, ...{ images: newField } }
+                    hasInvalidImage = true;
+                }
+            });
+
+            if (!hasInvalidImage) {
+                const newField = { value: form.images.value, error: '', isValid: true }
+                newForm = { ...form, ...{ images: newField } }
+            }
+        }
 
         if(!/^[a-zA-Zàéè ]{3,25}$/.test(form.title.value))
         {
-            const errorMsg = 'Le nom du pokémon est requis (1-25).'
+            const errorMsg = 'Le titre du modèle est requis (1-25).'
             const newField = { value: form.title.value, error: errorMsg, isValid: false }
             newForm = { ...newForm, ...{ title: newField } }
         }
@@ -82,7 +88,7 @@ export function ModelForm({model, isEditForm}) {
 
         if(!/^[a-zA-Zàéè ]{10,500}$/.test(form.description.value))
         {
-            const errorMsg = 'Les points de vie du pokémon sont compris entre 0 et 999.'
+            const errorMsg = 'La description du modèle est requis (10-500).'
             const newField = { value: form.description.value, error: errorMsg, isValid: false }
             newForm = { ...newForm, ...{ description: newField } }
         }
@@ -92,9 +98,9 @@ export function ModelForm({model, isEditForm}) {
             newForm = { ...newForm, ...{ description: newField } }
         }
 
-        if(!/^[0-9]{1,2}$/.test(form.file.value))
+        if(!/^[a-zA-Zàéè ]{3,25}$/.test(form.file.value))
         {
-            const errorMsg = 'Les dégâts du pokémon sont compris entre 0 et 99.'
+            const errorMsg = 'Le fichier est requis (1-25).'
             const newField = { value: form.file.value, error: errorMsg, isValid: false }
             newForm = { ...newForm, ...{ file: newField } }
         }
@@ -105,11 +111,16 @@ export function ModelForm({model, isEditForm}) {
         }
 
         setForm(newForm)
-        return newForm.title.isValid && newForm.description.isValid && newForm.file.isValid
+        return newForm.title.isValid && newForm.description.isValid && newForm.file.isValid && newForm.images.isValid
     }
 
     const deleteModel = () => {
         ModelsService.deleteModel(model).then(() => history("/models"))
+    }
+
+    const deleteImage = (id) => {
+        const imageElement = document.getElementById(`image-${id}`);
+        ModelsService.deleteImage(id).then(() => imageElement.remove())
     }
 
     return (
@@ -119,7 +130,14 @@ export function ModelForm({model, isEditForm}) {
                     <div className="card hoverable">
                         {isEditForm && (
                             <div className="card-image">
-                                {/*<img src={model.images[0].name} alt={model.title} style={{width: '250px', margin: '0 auto'}}/>*/}
+                                {model.images.map(image => (
+                                    <div key={image.id} id={`image-${image.id}`}>
+                                        <img src={'http://localhost:8000/assets/uploads/models/' + image.name} alt={model.title} style={{width: '250px', margin: '0 auto'}}/>
+                                        <span className="waves-effect waves-light btn">
+                                            <i onClick={() => deleteImage(image.id)} className="material-icons">delete</i>
+                                        </span>
+                                    </div>
+                                ))}
                                 <span className="btn-floating halfway-fab waves-effect waves-light">
                                     <i onClick={deleteModel} className="material-icons">delete</i>
                                 </span>
@@ -127,22 +145,20 @@ export function ModelForm({model, isEditForm}) {
                         )}
                         <div className="card-stacked">
                             <div className="card-content">
-                                {/* Pokemon picture */}
-                                {/*{isAddForm() && (*/}
-                                {/*    <div className="form-group">*/}
-                                {/*        <label htmlFor="name">Image</label>*/}
-                                {/*        <input id="images" type="text" name="images" className="form-control" value={form.images.value} onChange={e => handleInputChange(e)}></input>*/}
-                                {/*        {*/}
-                                {/*            form.images.error &&*/}
-                                {/*            <div className="card-panel red accent-1">*/}
-                                {/*                {form.images.error}*/}
-                                {/*            </div>*/}
-                                {/*        }*/}
-                                {/*    </div>*/}
-                                {/*)}*/}
-                                {/* Pokemon name */}
+                                {/* Modèle images */}
                                 <div className="form-group">
-                                    <label htmlFor="title">Nom</label>
+                                    <label htmlFor="images">Image</label>
+                                    <input id="images" type="file" name="images" multiple className="form-control" onChange={e => handleImageChange(e)}></input>
+                                    {
+                                        form.images.error &&
+                                        <div className="card-panel red accent-1">
+                                            {form.images.error}
+                                        </div>
+                                    }
+                                </div>
+                                {/* Modèle title */}
+                                <div className="form-group">
+                                    <label htmlFor="title">Titre</label>
                                     <input id="title" type="text" name="title" className="form-control" value={form.title.value} onChange={e => handleInputChange(e)}></input>
                                     {
                                         form.title.error &&
@@ -151,9 +167,9 @@ export function ModelForm({model, isEditForm}) {
                                         </div>
                                     }
                                 </div>
-                                {/* Pokemon hp */}
+                                {/* Modèle description */}
                                 <div className="form-group">
-                                    <label htmlFor="description">Point de vie</label>
+                                    <label htmlFor="description">Description</label>
                                     <input id="description" type="text" name="description" className="form-control" value={form.description.value} onChange={e => handleInputChange(e)}></input>
                                     {
                                         form.description.error &&
@@ -162,9 +178,9 @@ export function ModelForm({model, isEditForm}) {
                                         </div>
                                     }
                                 </div>
-                                {/* Pokemon cp */}
+                                {/* Modèle fichier */}
                                 <div className="form-group">
-                                    <label htmlFor="file">Dégâts</label>
+                                    <label htmlFor="file">Fichier</label>
                                     <input id="file" type="text" name="file" className="form-control" value={form.file.value} onChange={e => handleInputChange(e)}></input>
                                     {
                                         form.file.error &&
@@ -172,20 +188,6 @@ export function ModelForm({model, isEditForm}) {
                                             {form.file.error}
                                         </div>
                                     }
-                                </div>
-                                {/* Pokemon types */}
-                                <div className="form-group">
-                                    <label>Types</label>
-                                    {/*{images.map(type => (*/}
-                                    {/*    <div key={type} style={{marginBottom: '10px'}}>*/}
-                                    {/*        <label>*/}
-                                    {/*            <input id={type} type="checkbox" className="filled-in" value={type} disabled={!isTypesValid(type)} checked={hasType(type)} onChange={e => selectType(type, e)}></input>*/}
-                                    {/*            <span>*/}
-                                    {/*                <p className={formatType(type)}>{ type }</p>*/}
-                                    {/*            </span>*/}
-                                    {/*        </label>*/}
-                                    {/*    </div>*/}
-                                    {/*))}*/}
                                 </div>
                             </div>
                             <div className="card-action center">

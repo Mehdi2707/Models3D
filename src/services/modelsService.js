@@ -163,7 +163,7 @@ export default class ModelsService {
         if(this.isDev) {
             const token = localStorage.getItem('token');
 
-            return fetch(`http://localhost:8000/api/models?term=${term}`, {
+            return fetch(`http://localhost:8000/api/models?limit=10&term=${term}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

@@ -6,17 +6,20 @@ export function ModelSearch() {
 
     const [term, setTerm] = useState('');
     const [models, setModels] = useState([]);
+    const [search, setSearch] = useState(false);
 
     const handleInputChange = (e) => {
         const term = e.target.value;
         setTerm(term);
 
         if(term.length <= 1) {
+            setSearch(false);
             setModels([]);
             return;
         }
 
-        ModelsService.searchModel(term).then(models => setModels(models));
+        ModelsService.searchModel(term).then(models => setModels(models.data));
+        setSearch(true);
     }
 
     return (
@@ -25,9 +28,11 @@ export function ModelSearch() {
                 <div className="card">
                     <div className="card-content">
                         <div className="input-field">
-                            <input type="text" placeholder="Rechercher un pokémon" value={term} onChange={e => handleInputChange(e)} />
+                            <input type="text" placeholder="Rechercher un modèle" value={term} onChange={e => handleInputChange(e)} />
                         </div>
-                        <div className='collection'>
+                        <div className='collection' hidden={!search}>
+                            {models.length == 0 && search &&
+                             <p className='collection-item'>Aucun résultat</p>}
                             {models.map((model) => (
                                 <Link key={model.id} to={`/models/${model.id}`} className="collection-item">
                                     {model.title}

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import './pagination.css'
 
 export function Pagination({ currentPage, totalPages }) {
     return (

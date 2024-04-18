@@ -5,10 +5,10 @@ export default class ModelsService {
     static getModels(page) {
         if(this.isDev) {
             const token = localStorage.getItem('token');
-            let url = 'http://localhost:8000/api/models';
+            let url = 'http://localhost:8000/api/models?limit=4&';
             
             if(page)
-                url += '?page=' + page;
+                url += 'page=' + page;
 
             return fetch(url, {
                 method: "GET",

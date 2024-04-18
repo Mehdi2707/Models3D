@@ -74,9 +74,9 @@ export function ModelForm({model, isEditForm}) {
             }
         }
 
-        if(!/^[a-zA-Zàéè ]{3,25}$/.test(form.title.value))
+        if(!/^[a-zA-Zàçâéèô:\/ -.]{3,250}$/.test(form.title.value))
         {
-            const errorMsg = 'Le titre du modèle est requis (1-25).'
+            const errorMsg = 'Le titre du modèle est requis (3-250).'
             const newField = { value: form.title.value, error: errorMsg, isValid: false }
             newForm = { ...newForm, ...{ title: newField } }
         }
@@ -86,9 +86,9 @@ export function ModelForm({model, isEditForm}) {
             newForm = { ...newForm, ...{ title: newField } }
         }
 
-        if(!/^[a-zA-Zàéè ]{10,500}$/.test(form.description.value))
+        if(!/^[a-zA-Z0-9àçâéèô:\/ -.]{10,1000}$/.test(form.description.value))
         {
-            const errorMsg = 'La description du modèle est requis (10-500).'
+            const errorMsg = 'La description du modèle est requis (10-1000).'
             const newField = { value: form.description.value, error: errorMsg, isValid: false }
             newForm = { ...newForm, ...{ description: newField } }
         }
@@ -98,9 +98,9 @@ export function ModelForm({model, isEditForm}) {
             newForm = { ...newForm, ...{ description: newField } }
         }
 
-        if(!/^[a-zA-Zàéè ]{3,25}$/.test(form.file.value))
+        if(!/^[a-zA-Zàçâéèô:\/ -.]{3,25}$/.test(form.file.value))
         {
-            const errorMsg = 'Le fichier est requis (1-25).'
+            const errorMsg = 'Le fichier est requis (3-25).'
             const newField = { value: form.file.value, error: errorMsg, isValid: false }
             newForm = { ...newForm, ...{ file: newField } }
         }

@@ -12,7 +12,7 @@ function App() {
   return <Router>
               <div>
                   <nav>
-                      <div className="nav-wrapper teal">
+                      <div className="nav-wrapper" style={{backgroundColor: '#ff6e40'}}>
                           <Link to="/" className="brand-logo center">Modèles</Link>
                       </div>
                   </nav>

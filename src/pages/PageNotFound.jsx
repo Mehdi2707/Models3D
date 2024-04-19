@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export function PageNotFound() {
+
+    useEffect(() => { document.title = 'Page introuvable'; });
 
     return <div className="center">
                <img src="http://assets.pokemon.com/assets/cms2/img/pokedex/full/035.png" alt="Page non trouvée"/>

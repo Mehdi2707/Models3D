@@ -9,7 +9,8 @@ export function ModelForm({model, isEditForm}) {
     const [form, setForm] = useState({
         title: { value: model.title, isValid: true },
         description: { value: model.description, isValid: true },
-        file: { value: model.file, isValid: true },
+        files: { value: [], isValid: true },
+        tags: { value: [], isValid: true },
         images: { value: [], isValid: true }
     })
 
@@ -28,6 +29,13 @@ export function ModelForm({model, isEditForm}) {
         setForm({...form, ...newField})
     }
 
+    const handleFileChange = (e) => {
+        const files = e.target.files;
+        const newField = {['files']: {value: Array.from(files)}};
+
+        setForm({...form, ...newField})
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
         const isFormValid = validateForm()
@@ -35,7 +43,8 @@ export function ModelForm({model, isEditForm}) {
         if(isFormValid) {
             model.title = form.title.value
             model.description = form.description.value
-            model.file = form.file.value
+            model.files = form.files.value
+            model.tags = form.tags.value
             model.images = form.images.value
 
             isEditForm ? updateModel() : addModel()
@@ -50,7 +59,7 @@ export function ModelForm({model, isEditForm}) {
         ModelsService.updateModel(model).then(() => history(`/models/${model.id}`))
     }
 
-    const validateForm = () => {
+    const validateForm = () => { console.log(form);return;
         let newForm = form
 
         const allowedExtension = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
@@ -98,20 +107,8 @@ export function ModelForm({model, isEditForm}) {
             newForm = { ...newForm, ...{ description: newField } }
         }
 
-        if(!/^[a-zA-Zàçâéèô:\/ -.]{3,25}$/.test(form.file.value))
-        {
-            const errorMsg = 'Le fichier est requis (3-25).'
-            const newField = { value: form.file.value, error: errorMsg, isValid: false }
-            newForm = { ...newForm, ...{ file: newField } }
-        }
-        else
-        {
-            const newField = { value: form.file.value, error: '', isValid: true }
-            newForm = { ...newForm, ...{ file: newField } }
-        }
-
         setForm(newForm)
-        return newForm.title.isValid && newForm.description.isValid && newForm.file.isValid && newForm.images.isValid
+        return newForm.title.isValid && newForm.description.isValid && newForm.images.isValid
     }
 
     const deleteModel = () => {
@@ -156,6 +153,17 @@ export function ModelForm({model, isEditForm}) {
                                         </div>
                                     }
                                 </div>
+                                {/* Modèle fichiers */}
+                                <div className="form-group">
+                                    <label htmlFor="files">Fichiers</label>
+                                    <input id="files" type="file" name="files" multiple className="form-control" onChange={e => handleFileChange(e)}></input>
+                                    {
+                                        form.files.error &&
+                                        <div className="card-panel red accent-1">
+                                            {form.files.error}
+                                        </div>
+                                    }
+                                </div>
                                 {/* Modèle title */}
                                 <div className="form-group">
                                     <label htmlFor="title">Titre</label>
@@ -178,14 +186,14 @@ export function ModelForm({model, isEditForm}) {
                                         </div>
                                     }
                                 </div>
-                                {/* Modèle fichier */}
+                                {/* Modèle tags */}
                                 <div className="form-group">
-                                    <label htmlFor="file">Fichier</label>
-                                    <input id="file" type="text" name="file" className="form-control" value={form.file.value} onChange={e => handleInputChange(e)}></input>
+                                    <label htmlFor="tags">Tags</label>
+                                    <input id="tags" type="text" name="tags" className="form-control" value={form.tags.value} onChange={e => handleInputChange(e)}></input>
                                     {
-                                        form.file.error &&
+                                        form.tags.error &&
                                         <div className="card-panel red accent-1">
-                                            {form.file.error}
+                                            {form.tags.error}
                                         </div>
                                     }
                                 </div>

@@ -6,6 +6,7 @@ import {PageNotFound} from "./pages/PageNotFound.jsx";
 import {ModelDetails} from "./pages/ModelDetails.jsx";
 import {ModelEdit} from "./pages/ModelEdit.jsx";
 import {ModelAdd} from "./pages/ModelAdd.jsx";
+import './App.css';
 
 function App() {
 

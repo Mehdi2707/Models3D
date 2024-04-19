@@ -7,6 +7,8 @@ import {Loader} from "../components/Loader.jsx";
 
 export function ModelDetails () {
 
+    useEffect(() => { document.title = model ? model.title : 'Chargement...'; });
+
     const [model, setModel] = useState(null);
     const { id } = useParams();
     const [isAdmin, setIsAdmin] = useState(false);
@@ -55,8 +57,16 @@ export function ModelDetails () {
                                             <td><strong>{ model.description }</strong></td>
                                         </tr>
                                         <tr>
+                                            <td>Tags</td>
+                                            {model.tags.map(tag => (
+                                                <td key={tag.id}><strong>{ tag.name }</strong></td>
+                                            ))}
+                                        </tr>
+                                        <tr>
                                             <td>Fichier</td>
-                                            <td><strong>{ model.file }</strong></td>
+                                            {model.files.map(file => (
+                                                <td key={file.id}><strong>{ file.name }</strong></td>
+                                            ))}
                                         </tr>
                                         <tr>
                                             <td>Date de création</td>

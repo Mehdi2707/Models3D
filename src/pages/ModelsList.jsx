@@ -7,6 +7,8 @@ import { Pagination } from "../components/Pagination.jsx";
 
 export function ModelsList() {
 
+    useEffect(() => { document.title = 'Liste des modèles 3D'; });
+    
     const [models, setModels] = useState([])
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);

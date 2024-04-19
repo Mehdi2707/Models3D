@@ -1,9 +1,11 @@
 import {ModelForm} from '../components/ModelForm.jsx';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Model from "../models/model.ts";
 
 export function ModelAdd() {
     const [model] = useState(new Model())
+
+    useEffect(() => { document.title = 'Ajouter un modèle'; });
 
     return (
         <div>

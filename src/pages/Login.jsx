@@ -1,10 +1,12 @@
 import {useNavigate} from 'react-router-dom';
 import AuthenticationService from '../services/authenticationService';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 
 export function Login() {
 
     const history = useNavigate();
+
+    useEffect(() => { document.title = 'Connexion'; });
 
     const [form, setForm] = useState({
         username: { value: '' },

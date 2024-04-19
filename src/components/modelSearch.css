@@ -1,9 +1,3 @@
-input[type=text]:not(.browser-default):focus:not([readonly]) {
-    border-bottom: 1px solid #ff7043;
-    -webkit-box-shadow: 0 1px 0 0 #ff7043;
-    box-shadow: 0 1px 0 0 #ff7043;
-}
-
 .collection a.collection-item {
     color: #ff8a65;
 }

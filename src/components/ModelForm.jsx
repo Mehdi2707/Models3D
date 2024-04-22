@@ -1,10 +1,14 @@
-import {useState} from "react";
+import {useState, useRef, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import ModelsService from "../services/modelsService.js";
 
 export function ModelForm({model, isEditForm}) {
 
     const history = useNavigate()
+    const [term, setTerm] = useState('');
+    const [tags, setTags] = useState([]);
+    const [search, setSearch] = useState(false);
+    const [selectedTags, setSelectedTags] = useState([]);
 
     const [form, setForm] = useState({
         title: { value: model.title, isValid: true },
@@ -22,16 +26,41 @@ export function ModelForm({model, isEditForm}) {
         setForm({...form, ...newField})
     }
 
-    const handleImageChange = (e) => {
-        const imageFiles = e.target.files;
-        const newField = {['images']: {value: Array.from(imageFiles)}};
+    const handleTagChange = (e) => {
+        const fieldValue = e.target.value
 
-        setForm({...form, ...newField})
+        setTerm(fieldValue);
+
+        if(fieldValue.length <= 1) {
+            setSearch(false);
+            setTags([]);
+            return;
+        }
+
+        ModelsService.searchTag(fieldValue).then(tags => setTags(tags));
+        setSearch(true);
     }
+
+    const handleTagClick = (e) => {
+        const fieldValue = e.target.textContent
+
+        if (!selectedTags.includes(fieldValue)) {
+            const updatedTags = [...selectedTags, fieldValue];
+            setSelectedTags(updatedTags);
+            setForm({ ...form, tags: { value: updatedTags } });
+        }
+    }
+
+    const handleTagRemove = (tag) => {
+        const updatedTags = selectedTags.filter(t => t !== tag);
+        setSelectedTags(updatedTags);
+        setForm({ ...form, tags: { value: updatedTags } });
+    };
 
     const handleFileChange = (e) => {
         const files = e.target.files;
-        const newField = {['files']: {value: Array.from(files)}};
+        const fieldName = e.target.name;
+        const newField = {[fieldName]: {value: Array.from(files)}};
 
         setForm({...form, ...newField})
     }
@@ -59,8 +88,9 @@ export function ModelForm({model, isEditForm}) {
         ModelsService.updateModel(model).then(() => history(`/models/${model.id}`))
     }
 
-    const validateForm = () => { console.log(form);return;
+    const validateForm = () => {
         let newForm = form
+        // vérification des fichiers 3d à faire
 
         const allowedExtension = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
 
@@ -145,7 +175,7 @@ export function ModelForm({model, isEditForm}) {
                                 {/* Modèle images */}
                                 <div className="form-group">
                                     <label htmlFor="images">Image</label>
-                                    <input id="images" type="file" name="images" multiple className="form-control" onChange={e => handleImageChange(e)}></input>
+                                    <input id="images" type="file" name="images" multiple className="form-control" onChange={e => handleFileChange(e)}></input>
                                     {
                                         form.images.error &&
                                         <div className="card-panel red accent-1">
@@ -189,13 +219,30 @@ export function ModelForm({model, isEditForm}) {
                                 {/* Modèle tags */}
                                 <div className="form-group">
                                     <label htmlFor="tags">Tags</label>
-                                    <input id="tags" type="text" name="tags" className="form-control" value={form.tags.value} onChange={e => handleInputChange(e)}></input>
+                                    <input id="tags" type="text" name="tags" className="form-control" value={term} onChange={e => handleTagChange(e)} onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}></input>
                                     {
                                         form.tags.error &&
                                         <div className="card-panel red accent-1">
                                             {form.tags.error}
                                         </div>
                                     }
+                                </div>
+                                <ul className='collection' hidden={!search}>
+                                    {tags.length == 0 && search &&
+                                     <li className='collection-item' style={{cursor: "pointer"}} onClick={e => handleTagClick(e)}>{term.toLowerCase()}</li>}
+                                    {tags.map((tag) => (
+                                        <li key={tag.id} className="collection-item" style={{cursor: "pointer"}} onClick={e => handleTagClick(e)}>
+                                            {tag.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div>
+                                    {selectedTags.map((tag) => (
+                                        <div key={tag} className="chip">
+                                            {tag}
+                                            <i className="close material-icons" onClick={() => handleTagRemove(tag)}>close</i>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                             <div className="card-action center">

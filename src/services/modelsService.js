@@ -60,9 +60,14 @@ export default class ModelsService {
             const formData = new FormData();
             formData.append('title', model.title);
             formData.append('description', model.description);
-            formData.append('file', model.file)
             model.images.forEach((image, index) => {
                 formData.append(`images[${index}]`, image);
+            });
+            model.files.forEach((file, index) => {
+                formData.append(`files[${index}]`, file);
+            });
+            model.tags.forEach((tag, index) => {
+                formData.append(`tags[${index}]`, tag.name);
             });
 
             return fetch(`http://localhost:8000/api/models/${model.id}`, {
@@ -129,6 +134,28 @@ export default class ModelsService {
         });
     }
 
+    static deleteFile(id) {
+        if(this.isDev) {
+            const token = localStorage.getItem('token');
+
+            return fetch(`http://localhost:8000/api/files/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                // .then(response => response.json())
+                .catch(error => this.handleError(error));
+        }
+
+        return new Promise(resolve => {
+            const { id } = pokemon;
+            this.pokemons = this.pokemons.filter(pokemon => pokemon.id !== id);
+            resolve({});
+        });
+    }
+
     static addModel(model) {
         if(this.isDev) {
             const token = localStorage.getItem('token');
@@ -136,9 +163,14 @@ export default class ModelsService {
             const formData = new FormData();
             formData.append('title', model.title);
             formData.append('description', model.description);
-            formData.append('file', model.file)
+            model.files.forEach((file, index) => {
+                formData.append(`files[${index}]`, file);
+            });
             model.images.forEach((image, index) => {
                 formData.append(`images[${index}]`, image);
+            });
+            model.tags.forEach((tag, index) => {
+                formData.append(`tags[${index}]`, tag.name);
             });
 
             return fetch(`http://localhost:8000/api/models`, {

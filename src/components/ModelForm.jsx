@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from "react";
+import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import ModelsService from "../services/modelsService.js";
 
@@ -8,13 +8,13 @@ export function ModelForm({model, isEditForm}) {
     const [term, setTerm] = useState('');
     const [tags, setTags] = useState([]);
     const [search, setSearch] = useState(false);
-    const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedTags, setSelectedTags] = isEditForm ? useState(model.tags) : useState([]);
 
     const [form, setForm] = useState({
         title: { value: model.title, isValid: true },
         description: { value: model.description, isValid: true },
         files: { value: [], isValid: true },
-        tags: { value: [], isValid: true },
+        tags: { value: selectedTags, isValid: true },
         images: { value: [], isValid: true }
     })
 
@@ -41,14 +41,31 @@ export function ModelForm({model, isEditForm}) {
         setSearch(true);
     }
 
-    const handleTagClick = (e) => {
-        const fieldValue = e.target.textContent
+    const handleTagClick = (e, tag = null) => {
+        // Récupérez le nom du tag à partir de l'élément cliqué
+        const tagName = e.target.textContent;
 
-        if (!selectedTags.includes(fieldValue)) {
-            const updatedTags = [...selectedTags, fieldValue];
+        // Vérifiez si le tag est déjà sélectionné
+        if (!selectedTags.some(t => t.name === tagName)) {
+            // Ajoutez un nouveau tag à la liste des tags sélectionnés
+            let updatedTags;
+            if (tag) {
+                // Si un tag est passé, utilisez ses propriétés
+                updatedTags = [...selectedTags, { id: tag.id, name: tag.name }];
+            } else {
+                // Sinon, créez un nouveau tag avec un ID unique
+                updatedTags = [...selectedTags, { id: Date.now(), name: tagName }];
+            }
+
+            // Mettez à jour l'état des tags sélectionnés
             setSelectedTags(updatedTags);
+
+            // Mettez à jour l'état du formulaire
             setForm({ ...form, tags: { value: updatedTags } });
         }
+
+        setTerm('');
+        setSearch(false);
     }
 
     const handleTagRemove = (tag) => {
@@ -113,7 +130,7 @@ export function ModelForm({model, isEditForm}) {
             }
         }
 
-        if(!/^[a-zA-Zàçâéèô:\/ -.]{3,250}$/.test(form.title.value))
+        if(!/^[a-zA-Z0-9àçâéèô:\/ -.]{3,250}$/.test(form.title.value))
         {
             const errorMsg = 'Le titre du modèle est requis (3-250).'
             const newField = { value: form.title.value, error: errorMsg, isValid: false }
@@ -150,6 +167,11 @@ export function ModelForm({model, isEditForm}) {
         ModelsService.deleteImage(id).then(() => imageElement.remove())
     }
 
+    const deleteFile = (id) => {
+        const fileElement = document.getElementById(`file-${id}`);
+        ModelsService.deleteFile(id).then(() => fileElement.remove())
+    }
+
     return (
         <form onSubmit={e => handleSubmit(e)}>
             <div className="row">
@@ -162,6 +184,14 @@ export function ModelForm({model, isEditForm}) {
                                         <img src={'http://localhost:8000/assets/uploads/models/' + image.name} alt={model.title} style={{width: '250px', margin: '0 auto'}}/>
                                         <span className="waves-effect waves-light btn">
                                             <i onClick={() => deleteImage(image.id)} className="material-icons">delete</i>
+                                        </span>
+                                    </div>
+                                ))}
+                                {model.files.map(file => (
+                                    <div key={file.id} id={`file-${file.id}`}>
+                                        <a href={'http://localhost:8000/assets/uploads/models/' + file.name} target="_blank">{file.name}</a>
+                                        <span className="waves-effect waves-light btn">
+                                            <i onClick={() => deleteFile(file.id)} className="material-icons">delete</i>
                                         </span>
                                     </div>
                                 ))}
@@ -231,15 +261,15 @@ export function ModelForm({model, isEditForm}) {
                                     {tags.length == 0 && search &&
                                      <li className='collection-item' style={{cursor: "pointer"}} onClick={e => handleTagClick(e)}>{term.toLowerCase()}</li>}
                                     {tags.map((tag) => (
-                                        <li key={tag.id} className="collection-item" style={{cursor: "pointer"}} onClick={e => handleTagClick(e)}>
+                                        <li key={tag.id} className="collection-item" style={{cursor: "pointer"}} onClick={e => handleTagClick(e, tag)}>
                                             {tag.name}
                                         </li>
                                     ))}
                                 </ul>
                                 <div>
                                     {selectedTags.map((tag) => (
-                                        <div key={tag} className="chip">
-                                            {tag}
+                                        <div key={tag.id} className="chip">
+                                            {tag.name}
                                             <i className="close material-icons" onClick={() => handleTagRemove(tag)}>close</i>
                                         </div>
                                     ))}

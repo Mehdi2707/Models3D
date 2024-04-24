@@ -1,6 +1,9 @@
 import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import ModelsService from "../services/modelsService.js";
+import TagsService from "../services/tagsService.js";
+import ImagesService from "../services/imagesService.js";
+import FilesService from "../services/filesServices.js";
 
 export function ModelForm({model, isEditForm}) {
 
@@ -42,7 +45,7 @@ export function ModelForm({model, isEditForm}) {
             return;
         }
 
-        ModelsService.searchTag(fieldValue).then(tags => setTags(tags));
+        TagsService.searchTag(fieldValue).then(tags => setTags(tags));
         setSearch(true);
     }
 
@@ -204,12 +207,12 @@ export function ModelForm({model, isEditForm}) {
 
     const deleteImage = (id) => {
         const imageElement = document.getElementById(`image-${id}`);
-        ModelsService.deleteImage(id).then(() => imageElement.remove())
+        ImagesService.deleteImage(id).then(() => imageElement.remove())
     }
 
     const deleteFile = (id) => {
         const fileElement = document.getElementById(`file-${id}`);
-        ModelsService.deleteFile(id).then(() => fileElement.remove())
+        FilesService.deleteFile(id).then(() => fileElement.remove())
     }
 
     return (

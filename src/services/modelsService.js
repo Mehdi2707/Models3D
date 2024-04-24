@@ -17,8 +17,8 @@ export default class ModelsService {
                     "Authorization": `Bearer ${token}`
                 }
             })
-                .then(response => response.json())
-                .catch(error => this.handleError(error));
+            .then(response => response.json())
+            .catch(error => this.handleError(error));
         }
 
         return new Promise(resolve => {
@@ -37,15 +37,15 @@ export default class ModelsService {
                     "Authorization": `Bearer ${token}`
                 }
             })
-                .then(response => {
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            return null;
-                        }
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        return null;
                     }
-                    return response.json();
-                })
-                .catch(error => this.handleError(error));
+                }
+                return response.json();
+            })
+            .catch(error => this.handleError(error));
         }
 
         return new Promise(resolve => {
@@ -74,12 +74,10 @@ export default class ModelsService {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    // 'Content-Type': 'application/json',
                     "Authorization": `Bearer ${token}`
                 }
             })
-                // .then(response => response.json())
-                .catch(error => this.handleError(error));
+            .catch(error => this.handleError(error));
         }
 
         return new Promise(resolve => {
@@ -101,52 +99,7 @@ export default class ModelsService {
                     "Authorization": `Bearer ${token}`
                 }
             })
-                // .then(response => response.json())
-                .catch(error => this.handleError(error));
-        }
-
-        return new Promise(resolve => {
-            const { id } = pokemon;
-            this.pokemons = this.pokemons.filter(pokemon => pokemon.id !== id);
-            resolve({});
-        });
-    }
-
-    static deleteImage(id) {
-        if(this.isDev) {
-            const token = localStorage.getItem('token');
-
-            return fetch(`http://localhost:8000/api/images/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-                // .then(response => response.json())
-                .catch(error => this.handleError(error));
-        }
-
-        return new Promise(resolve => {
-            const { id } = pokemon;
-            this.pokemons = this.pokemons.filter(pokemon => pokemon.id !== id);
-            resolve({});
-        });
-    }
-
-    static deleteFile(id) {
-        if(this.isDev) {
-            const token = localStorage.getItem('token');
-
-            return fetch(`http://localhost:8000/api/files/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-                // .then(response => response.json())
-                .catch(error => this.handleError(error));
+            .catch(error => this.handleError(error));
         }
 
         return new Promise(resolve => {
@@ -177,12 +130,11 @@ export default class ModelsService {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    // 'Content-Type': 'application/json',
                     "Authorization": `Bearer ${token}`
                 }
             })
-                .then(response => response.json())
-                .catch(error => this.handleError(error));
+            .then(response => response.json())
+            .catch(error => this.handleError(error));
         }
 
         return new Promise(resolve => {
@@ -202,30 +154,8 @@ export default class ModelsService {
                     "Authorization": `Bearer ${token}`
                 }
             })
-                .then(response => response.json())
-                .catch(error => this.handleError(error));
-        }
-
-        return new Promise(resolve => {
-            const results = this.pokemons.filter(pokemon => pokemon.name.includes(term));
-            resolve(results);
-        });
-
-    }
-
-    static searchTag(term) {
-        if(this.isDev) {
-            const token = localStorage.getItem('token');
-
-            return fetch(`http://localhost:8000/api/tags?term=${term}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-                .then(response => response.json())
-                .catch(error => this.handleError(error));
+            .then(response => response.json())
+            .catch(error => this.handleError(error));
         }
 
         return new Promise(resolve => {

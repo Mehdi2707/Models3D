@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import ModelsService from "../services/modelsService.js";
 
@@ -8,7 +8,12 @@ export function ModelForm({model, isEditForm}) {
     const [term, setTerm] = useState('');
     const [tags, setTags] = useState([]);
     const [search, setSearch] = useState(false);
-    const [selectedTags, setSelectedTags] = isEditForm ? useState(model.tags) : useState([]);
+    const [selectedTags, setSelectedTags] = useState(model.tags);
+
+    useEffect(() => {
+        const inputElems = document.querySelectorAll('input#title, textarea#description');
+        M.CharacterCounter.init(inputElems);
+    }, []);
 
     const [form, setForm] = useState({
         title: { value: model.title, isValid: true },
@@ -130,7 +135,24 @@ export function ModelForm({model, isEditForm}) {
             }
         }
 
-        if(!/^[a-zA-Z0-9àçâéèô:\/ -.]{3,250}$/.test(form.title.value))
+        if (form.tags.value && form.tags.value.length > 0)
+        {
+            form.tags.value.forEach(tag => {
+                if(!/^[a-zA-Z0-9àçâéèô:\/ -.]{2,250}$/.test(tag.name))
+                {
+                    const errorMsg = 'Le tag ' + tag.name + ' contient un/des caractère(s) invalide (2-250).'
+                    const newField = { value: tag, error: errorMsg, isValid: false }
+                    newForm = { ...newForm, ...{ tags: newField } }
+                }
+                else
+                {
+                    const newField = { value: form.tags.value, error: '', isValid: true }
+                    newForm = { ...newForm, ...{ tags: newField } }
+                }
+            });
+        }
+
+        if(!form.title.value)
         {
             const errorMsg = 'Le titre du modèle est requis (3-250).'
             const newField = { value: form.title.value, error: errorMsg, isValid: false }
@@ -138,11 +160,20 @@ export function ModelForm({model, isEditForm}) {
         }
         else
         {
-            const newField = { value: form.title.value, error: '', isValid: true }
-            newForm = { ...newForm, ...{ title: newField } }
+            if(!/^[a-zA-Z0-9àçâéèô:\/ -.]{3,250}$/.test(form.title.value))
+            {
+                const errorMsg = 'Le titre du modèle contient un/des caractère(s) invalide (3-250).'
+                const newField = { value: form.title.value, error: errorMsg, isValid: false }
+                newForm = { ...newForm, ...{ title: newField } }
+            }
+            else
+            {
+                const newField = { value: form.title.value, error: '', isValid: true }
+                newForm = { ...newForm, ...{ title: newField } }
+            }
         }
 
-        if(!/^[a-zA-Z0-9àçâéèô:\/ -.]{10,1000}$/.test(form.description.value))
+        if(!form.description.value)
         {
             const errorMsg = 'La description du modèle est requis (10-1000).'
             const newField = { value: form.description.value, error: errorMsg, isValid: false }
@@ -150,12 +181,21 @@ export function ModelForm({model, isEditForm}) {
         }
         else
         {
-            const newField = { value: form.description.value, error: '', isValid: true }
-            newForm = { ...newForm, ...{ description: newField } }
+            if(!/^[a-zA-Z0-9àçâéèô:\/ -.?\n]{10,1000}$/.test(form.description.value))
+            {
+                const errorMsg = 'La description du modèle contient un/des caractère(s) invalide (10-1000).'
+                const newField = { value: form.description.value, error: errorMsg, isValid: false }
+                newForm = { ...newForm, ...{ description: newField } }
+            }
+            else
+            {
+                const newField = { value: form.description.value, error: '', isValid: true }
+                newForm = { ...newForm, ...{ description: newField } }
+            }
         }
 
         setForm(newForm)
-        return newForm.title.isValid && newForm.description.isValid && newForm.images.isValid
+        return newForm.title.isValid && newForm.description.isValid && newForm.images.isValid && newForm.tags.isValid
     }
 
     const deleteModel = () => {
@@ -178,11 +218,11 @@ export function ModelForm({model, isEditForm}) {
                 <div className="col s12 m8 offset-m2">
                     <div className="card hoverable">
                         {isEditForm && (
-                            <div className="card-image">
+                            <div className="card-content">
                                 {model.images.map(image => (
-                                    <div key={image.id} id={`image-${image.id}`}>
+                                    <div className="card-image" key={image.id} id={`image-${image.id}`}>
                                         <img src={'http://localhost:8000/assets/uploads/models/' + image.name} alt={model.title} style={{width: '250px', margin: '0 auto'}}/>
-                                        <span className="waves-effect waves-light btn">
+                                        <span className="btn-floating halfway-fab waves-effect waves-light">
                                             <i onClick={() => deleteImage(image.id)} className="material-icons">delete</i>
                                         </span>
                                     </div>
@@ -204,8 +244,15 @@ export function ModelForm({model, isEditForm}) {
                             <div className="card-content">
                                 {/* Modèle images */}
                                 <div className="form-group">
-                                    <label htmlFor="images">Image</label>
-                                    <input id="images" type="file" name="images" multiple className="form-control" onChange={e => handleFileChange(e)}></input>
+                                    <div className="file-field input-field">
+                                        <div className="btn">
+                                            <span htmlFor="images">Image</span>
+                                            <input id="images" type="file" name="images" multiple className="form-control" onChange={e => handleFileChange(e)}></input>
+                                        </div>
+                                        <div className="file-path-wrapper">
+                                            <input className="file-path validate" type="text" placeholder="Upload d'une ou plusieurs images"/>
+                                        </div>
+                                    </div>
                                     {
                                         form.images.error &&
                                         <div className="card-panel red accent-1">
@@ -215,8 +262,15 @@ export function ModelForm({model, isEditForm}) {
                                 </div>
                                 {/* Modèle fichiers */}
                                 <div className="form-group">
-                                    <label htmlFor="files">Fichiers</label>
-                                    <input id="files" type="file" name="files" multiple className="form-control" onChange={e => handleFileChange(e)}></input>
+                                    <div className="file-field input-field">
+                                        <div className="btn">
+                                            <span htmlFor="files">Fichier 3D</span>
+                                            <input id="files" type="file" name="files" multiple className="form-control" onChange={e => handleFileChange(e)}></input>
+                                        </div>
+                                        <div className="file-path-wrapper">
+                                            <input className="file-path validate" type="text" placeholder="Upload d'un ou plusieurs fichiers"/>
+                                        </div>
+                                    </div>
                                     {
                                         form.files.error &&
                                         <div className="card-panel red accent-1">
@@ -226,8 +280,10 @@ export function ModelForm({model, isEditForm}) {
                                 </div>
                                 {/* Modèle title */}
                                 <div className="form-group">
-                                    <label htmlFor="title">Titre</label>
-                                    <input id="title" type="text" name="title" className="form-control" value={form.title.value} onChange={e => handleInputChange(e)}></input>
+                                    <div className="input-field">
+                                        <input id="title" type="text" name="title" className="form-control" data-length="250" value={form.title.value} onChange={e => handleInputChange(e)}></input>
+                                        <label htmlFor="title">Titre</label>
+                                    </div>
                                     {
                                         form.title.error &&
                                         <div className="card-panel red accent-1">
@@ -237,8 +293,10 @@ export function ModelForm({model, isEditForm}) {
                                 </div>
                                 {/* Modèle description */}
                                 <div className="form-group">
-                                    <label htmlFor="description">Description</label>
-                                    <input id="description" type="text" name="description" className="form-control" value={form.description.value} onChange={e => handleInputChange(e)}></input>
+                                    <div className="input-field">
+                                    <textarea id="description" name="description" className="materialize-textarea" value={form.description.value} onChange={e => handleInputChange(e)} data-length="1000"></textarea>
+                                        <label htmlFor="description">Description</label>
+                                    </div>
                                     {
                                         form.description.error &&
                                         <div className="card-panel red accent-1">

@@ -1,7 +1,11 @@
-input[type=text]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]) {
+input[type=text]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]) {
   border-bottom: 1px solid #ff7043;
   -webkit-box-shadow: 0 1px 0 0 #ff7043;
   box-shadow: 0 1px 0 0 #ff7043;
+}
+
+textarea:focus:not([readonly])+label, input[type=text]:not(.browser-default):focus:not([readonly])+label {
+  color: #ff7043 !important;
 }
 
 .btn, .btn-large, .btn-small, .btn-floating {

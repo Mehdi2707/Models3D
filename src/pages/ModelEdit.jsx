@@ -6,7 +6,7 @@ import {Loader} from "../components/Loader.jsx";
 
 export function ModelEdit() {
 
-    useEffect(() => { document.title = model ? 'Éditer ' + model.title : 'Chargement...'; });
+    useEffect(() => { document.title = model ? 'Éditer ' + model.title + ' - Models 3D' : 'Chargement...'; });
     
     const [model, setModel] = useState(null);
     const { id } = useParams();

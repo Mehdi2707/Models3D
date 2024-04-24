@@ -19,15 +19,14 @@ export function ModelCard({ model, borderColor = '#ff7043' }) {
     }
 
     return <div className="col s6 m3" onClick={() => goToModel(model.id)} onMouseEnter={showBorder} onMouseLeave={hideBorder}>
-        <div className="card stylizedBorder" style={{ borderColor: color }}>
+        <div className="card waves-effect waves-block waves-light stylizedBorder" style={{ borderColor: color }}>
             <div className="card-image">
                 {model.images.length > 0 && (
                     <img src={'http://localhost:8000/assets/uploads/models/mini/400x400-' + model.images[0].name} alt={model.title} />
                 )}
-                <span className="card-title">{model.title}</span>
             </div>
             <div className="card-content">
-                <p><small>{formatDate(model.createdAt)}</small></p>
+                <span className="card-title">{model.title}</span>
             </div>
         </div>
     </div>

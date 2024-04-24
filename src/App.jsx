@@ -14,7 +14,7 @@ function App() {
               <div>
                   <nav>
                       <div className="nav-wrapper" style={{backgroundColor: '#ff6e40'}}>
-                          <Link to="/" className="brand-logo center">Modèles</Link>
+                          <Link to="/" className="brand-logo center">Models 3D</Link>
                       </div>
                   </nav>
                   <Routes>

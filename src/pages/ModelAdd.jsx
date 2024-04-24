@@ -5,7 +5,7 @@ import Model from "../models/model.ts";
 export function ModelAdd() {
     const [model] = useState(new Model())
 
-    useEffect(() => { document.title = 'Ajouter un modèle'; });
+    useEffect(() => { document.title = 'Ajouter un modèle - Models 3D'; });
 
     return (
         <div>

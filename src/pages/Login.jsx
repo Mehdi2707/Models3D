@@ -6,7 +6,7 @@ export function Login() {
 
     const history = useNavigate();
 
-    useEffect(() => { document.title = 'Connexion'; });
+    useEffect(() => { document.title = 'Connexion - Models 3D'; });
 
     const [form, setForm] = useState({
         username: { value: '' },

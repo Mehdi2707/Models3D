@@ -3,7 +3,7 @@ import AuthenticationService from '../services/authenticationService';
 import {useState, useEffect} from "react";
 import { checkTokenAuthentication } from '../helpers/checkTokenAuthentication';
 
-export function Login({ setIsAuthenticated }) {
+export function Register({ setIsAuthenticated }) {
 
     if (checkTokenAuthentication()) {
         // Si le JWT est valide, rediriger vers la page d'accueil
@@ -12,14 +12,14 @@ export function Login({ setIsAuthenticated }) {
 
     const history = useNavigate();
 
-    useEffect(() => { document.title = 'Connexion - Models 3D'; });
+    useEffect(() => { document.title = 'Inscription - Models 3D'; });
 
     const [form, setForm] = useState({
         username: { value: '' },
         password: { value: '' },
     });
 
-    const [message, setMessage] = useState('Connectez-vous.');
+    const [message, setMessage] = useState('Inscrivez-vous.');
 
     const handleInputChange = (e) => {
         const fieldName = e.target.name;
@@ -62,16 +62,25 @@ export function Login({ setIsAuthenticated }) {
         e.preventDefault();
         const isFormValid = validateForm();
         if(isFormValid) {
-            setMessage('👉 Tentative de connexion en cours ...');
-            AuthenticationService.login(form.username.value, form.password.value).then(isAuthenticated => {
-                if(isAuthenticated.code === 401) {
-                    setMessage('🔐 Identifiant ou mot de passe incorrect.');
+            setMessage('👉 Vérification en cours ...');
+            AuthenticationService.register(form.username.value, form.password.value).then(user => {
+                if(user.status && user.status === 500) {
+                    setMessage('❌ Un problème est survenue.');
                     return;
                 }
 
-                localStorage.setItem('token', isAuthenticated.token);
-                setIsAuthenticated(true);
-                history('/');
+                setMessage('👉 Tentative de connexion en cours ...');
+                AuthenticationService.login(form.username.value, form.password.value).then(isAuthenticated => {
+                    if(isAuthenticated.code === 401) {
+                        setMessage('🔐 Identifiant ou mot de passe incorrect.');
+                        return;
+                    }
+
+                    localStorage.setItem('token', isAuthenticated.token);
+                    setIsAuthenticated(true);
+                    history('/');
+
+                });
 
             });
         }

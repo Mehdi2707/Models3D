@@ -1,5 +1,5 @@
 import {ModelsList} from "./pages/ModelsList.jsx";
-import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
+import {Route, BrowserRouter as Router, Routes, Link} from "react-router-dom";
 import {Login} from "./pages/Login.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import {PageNotFound} from "./pages/PageNotFound.jsx";
@@ -9,9 +9,9 @@ import {ModelAdd} from "./pages/ModelAdd.jsx";
 import {Navbar} from "./components/Navbar.jsx";
 import './App.css';
 import { Register } from "./pages/Register.jsx";
-import { Logout } from "./pages/Logout.jsx";
 import { useState } from "react";
 import { checkTokenAuthentication } from "./helpers/checkTokenAuthentication.js";
+import { Logout } from "./components/Logout.jsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(checkTokenAuthentication());

@@ -72,8 +72,12 @@ export function ModelDetails () {
                                                 <td>{formatDate(model.createdAt)}</td>
                                             </tr>
                                             <tr>
+                                                <td>Utilisateur</td>
+                                                <td>{model.user.email}</td>
+                                            </tr>
+                                            <tr>
                                                 <td>Description</td>
-                                                <td><strong>{ model.description }</strong></td>
+                                                <td style={{ whiteSpace: 'pre-wrap' }}><strong>{ model.description }</strong></td>
                                             </tr>
                                             <tr>
                                                 <td>Tags</td>
@@ -85,7 +89,11 @@ export function ModelDetails () {
                                             </tr>
                                             <tr>
                                                 <td>Fichiers</td>
-                                                <td><a className='waves-effect waves-light btn'>Télécharger les fichiers</a></td>
+                                                <td>
+                                                    {model.files.length > 0 && (
+                                                        <a href={'http://localhost:8000/assets/uploads/models/' + model.files[0].name} download={model.files[0].name} target="_blank" className='waves-effect waves-light btn'>Télécharger les fichiers</a>
+                                                    )}
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

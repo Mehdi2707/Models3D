@@ -24,25 +24,25 @@ export function ModelSearch() {
     }
 
     return (
-        <div className="row">
-            <div className="col s12 m6 offset-m3">
-                <div className="card">
-                    <div className="card-content">
-                        <div className="input-field">
-                            <input type="text" placeholder="Rechercher un modèle" value={term} onChange={e => handleInputChange(e)} />
-                        </div>
-                        <div className='collection' hidden={!search}>
-                            {models.length == 0 && search &&
-                             <p className='collection-item'>Aucun résultat</p>}
-                            {models.map((model) => (
-                                <Link key={model.id} to={`/models/${model.id}`} className="collection-item">
-                                    {model.title}
-                                </Link>
-                            ))}
+            <div className="row">
+                <div className="col s12 m6 offset-m3">
+                    <div className="card">
+                        <div className="center">
+                            <div className="input-field">
+                                <input type="text" placeholder="Rechercher un modèle" value={term} onChange={e => handleInputChange(e)} />
+                            </div>
+                            <div className='collection' hidden={!search}>
+                                {models.length == 0 && search &&
+                                <p className='collection-item'>Aucun résultat</p>}
+                                {models.map((model) => (
+                                    <Link key={model.id} to={`/models/${model.id}`} className="collection-item">
+                                        {model.title}
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     );
 }

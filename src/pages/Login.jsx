@@ -19,7 +19,7 @@ export function Login({ setIsAuthenticated }) {
         password: { value: '' },
     });
 
-    const [message, setMessage] = useState('Connectez-vous.');
+    const [message, setMessage] = useState('');
 
     const handleInputChange = (e) => {
         const fieldName = e.target.name;
@@ -81,6 +81,7 @@ export function Login({ setIsAuthenticated }) {
         <form onSubmit={(e) => handleSubmit(e)}>
             <div className="row">
                 <div className="col s12 m8 offset-m2">
+                <h3 className="header center white-text">Connexion</h3>
                     <div className="card hoverable">
                         <div className="card-stacked">
                             <div className="card-content">

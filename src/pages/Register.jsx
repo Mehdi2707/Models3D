@@ -19,7 +19,7 @@ export function Register({ setIsAuthenticated }) {
         password: { value: '' },
     });
 
-    const [message, setMessage] = useState('Inscrivez-vous.');
+    const [message, setMessage] = useState('');
 
     const handleInputChange = (e) => {
         const fieldName = e.target.name;
@@ -69,7 +69,7 @@ export function Register({ setIsAuthenticated }) {
                     return;
                 }
 
-                setMessage('👉 Tentative de connexion en cours ...');
+                setMessage('👉 Connexion en cours ...');
                 AuthenticationService.login(form.username.value, form.password.value).then(isAuthenticated => {
                     if(isAuthenticated.code === 401) {
                         setMessage('🔐 Identifiant ou mot de passe incorrect.');
@@ -90,6 +90,7 @@ export function Register({ setIsAuthenticated }) {
         <form onSubmit={(e) => handleSubmit(e)}>
             <div className="row">
                 <div className="col s12 m8 offset-m2">
+                <h3 className="header center white-text">Inscription</h3>
                     <div className="card hoverable">
                         <div className="card-stacked">
                             <div className="card-content">

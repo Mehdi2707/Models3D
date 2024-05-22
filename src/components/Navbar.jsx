@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import {Link} from "react-router-dom";
 import { checkTokenAuthentication } from "../helpers/checkTokenAuthentication";
+import { ModelSearch } from "../components/ModelSearch.jsx";
 
 export function Navbar({ isAuthenticated, setIsAuthenticated }) {
 
@@ -21,20 +22,34 @@ export function Navbar({ isAuthenticated, setIsAuthenticated }) {
     }, [setIsAuthenticated]);
 
     return (
+        <>
             <nav>
                 <div className="nav-wrapper" style={{backgroundColor: '#ff6e40'}}>
-                    <Link to="/" className="brand-logo center">Models 3D</Link>
+                    <Link to="/" className="brand-logo" style={{ marginLeft: "1rem" }}>Models 3D</Link>
+                    <a href="#" data-target="mobile-demo" className="sidenav-trigger"><i className="material-icons">menu</i></a>
                     {isAuthenticated ?
-                        <ul className="left hide-on-med-and-down">
+                        <ul id="nav-mobile" className="right hide-on-med-and-down">
                             <li><Link to="/logout">Déconnexion</Link></li>
                         </ul>
-                         : 
-                        <ul className="right hide-on-med-and-down">
+                        : 
+                        <ul id="nav-mobile" className="right hide-on-med-and-down">
                             <li><Link to="/register">Inscription</Link></li>
                             <li><Link to="/login">Connexion</Link></li>
                         </ul>
                     }
                 </div>
             </nav>
+            {isAuthenticated ?
+                <ul className="sidenav" id="mobile-demo">
+                    <li><Link to="/logout">Déconnexion</Link></li>
+                </ul>
+                : 
+                <ul className="sidenav" id="mobile-demo">
+                    <li><Link to="/register">Inscription</Link></li>
+                    <li><Link to="/login">Connexion</Link></li>
+                </ul>
+            }
+            <ModelSearch></ModelSearch>
+        </>
     )
 }

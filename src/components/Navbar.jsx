@@ -40,16 +40,18 @@ export function Navbar({ isAuthenticated, setIsAuthenticated }) {
                 </div>
             </nav>
             {isAuthenticated ?
-                <ul className="sidenav" id="mobile-demo">
-                    <li><Link to="/logout">Déconnexion</Link></li>
-                </ul>
+                <>
+                    <ul className="sidenav" id="mobile-demo">
+                        <li><Link to="/logout">Déconnexion</Link></li>
+                    </ul>
+                    <ModelSearch></ModelSearch>
+                </>
                 : 
                 <ul className="sidenav" id="mobile-demo">
                     <li><Link to="/register">Inscription</Link></li>
                     <li><Link to="/login">Connexion</Link></li>
                 </ul>
             }
-            <ModelSearch></ModelSearch>
         </>
     )
 }

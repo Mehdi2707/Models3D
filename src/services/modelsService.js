@@ -5,10 +5,10 @@ export default class ModelsService {
     static getModels(page) {
         if(this.isDev) {
             const token = localStorage.getItem('token');
-            let url = 'http://localhost:8000/api/models?limit=4&';
+            let url = 'http://localhost:8000/api/models?limit=4';
             
             if(page)
-                url += 'page=' + page;
+                url += '&page=' + page;
 
             return fetch(url, {
                 method: "GET",
@@ -148,6 +148,34 @@ export default class ModelsService {
             const token = localStorage.getItem('token');
 
             return fetch(`http://localhost:8000/api/models?limit=10&term=${term}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .catch(error => this.handleError(error));
+        }
+
+        return new Promise(resolve => {
+            const results = this.pokemons.filter(pokemon => pokemon.name.includes(term));
+            resolve(results);
+        });
+
+    }
+
+    static getModelTag(tag, page) {
+        if(this.isDev) {
+            const token = localStorage.getItem('token');
+            let url = 'http://localhost:8000/api/models?limit=10';
+
+            if(page)
+                url += '&page=' + page;
+
+            url += '&tag=' + tag;
+
+            return fetch(url, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

@@ -45,8 +45,8 @@ export function ModelDetails () {
             { model ? (
                 <div className="row">
                     <div className="col s12 m8 offset-m2">
-                        <h3 className="header center">{ model.title }</h3>
                         <div className="card hoverable">
+                            <h3 className="header center">{ model.title }</h3>
                             <div className='card-image'>
                                 <div className="col s12 m4 l2"></div>
                                     <div className="carousel carousel-slider center col s12 m4 l8 center">
@@ -83,7 +83,7 @@ export function ModelDetails () {
                                                 <td>Tags</td>
                                                 <td>
                                                     {model.tags.map(tag => (
-                                                        <a className='waves-effect waves-light btn-small' href='/models' key={tag.id}><strong>{ tag.name }</strong></a>
+                                                        <a className='waves-effect waves-light btn-small' href={'/models/tag/' + tag.name} key={tag.id}><strong>{ tag.name }</strong></a>
                                                     ))}
                                                 </td>
                                             </tr>
@@ -91,7 +91,7 @@ export function ModelDetails () {
                                                 <td>Fichiers</td>
                                                 <td>
                                                     {model.files.length > 0 && (
-                                                        <a href={'http://localhost:8000/assets/uploads/models/' + model.files[0].name} download={model.files[0].name} target="_blank" className='waves-effect waves-light btn'>Télécharger les fichiers</a>
+                                                        <a href={'http://localhost:8000/assets/uploads/models/' + model.file} download={model.file} target="_blank" className='waves-effect waves-light btn'>Télécharger les fichiers</a>
                                                     )}
                                                 </td>
                                             </tr>
@@ -100,9 +100,6 @@ export function ModelDetails () {
                                     {model.files.map(file => (
                                         <p key={file.id}><strong>{ file.name }</strong></p>
                                     ))}
-                                </div>
-                                <div className="card-action">
-                                    <Link to="/">Retour</Link>
                                 </div>
                             </div>
                         </div>

@@ -25,6 +25,11 @@ function App() {
                                 <ModelsList />
                             </PrivateRoute>
                         }/>
+                        <Route exact path="/models/tag/:tag" element={
+                            <PrivateRoute isAuthenticated={isAuthenticated}>
+                                <ModelsList />
+                            </PrivateRoute>
+                        }/>
                         <Route exact path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
                         <Route exact path="/register" element={<Register setIsAuthenticated={setIsAuthenticated} />} />
                         <Route exact path="/logout" element={

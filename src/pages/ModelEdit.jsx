@@ -19,7 +19,7 @@ export function ModelEdit() {
         <div>
             { model ? (
                 <div className="row">
-                    <h2 className="header center">Éditer { model.title }</h2>
+                    <h2 className="header center white-text">Éditer { model.title }</h2>
                     <ModelForm model={model} isEditForm={true}></ModelForm>
                 </div>
             ) : (

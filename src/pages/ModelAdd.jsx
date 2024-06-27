@@ -11,7 +11,7 @@ export function ModelAdd() {
         <div>
             {
                 <div className="row">
-                    <h2 className="header center">Ajouter un modèle</h2>
+                    <h2 className="header center white-text">Ajouter un modèle</h2>
                     <ModelForm model={model} isEditForm={false}></ModelForm>
                 </div>
             }

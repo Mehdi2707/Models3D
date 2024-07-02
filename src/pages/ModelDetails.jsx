@@ -10,8 +10,6 @@ export function ModelDetails () {
     const { id } = useParams();
     const [isAdmin, setIsAdmin] = useState(false);
     const [fileSizes, setFileSizes] = useState({}); // État pour stocker les tailles des fichiers
-    const [initializedFiles, setInitializedFiles] = useState([]); // État pour suivre les fichiers déjà initialisés
-    const [loadingFiles, setLoadingFiles] = useState(true); // État global de chargement
 
     useEffect(() => {
         // Met à jour le titre de la page
@@ -69,53 +67,8 @@ export function ModelDetails () {
             });
         }
     }, [model]);
-      
-    useEffect(() => {
-        if (model && Object.keys(fileSizes).length > 0) {
-            const loadingStatus = {}; // Initialisation de l'état de chargement
-            model.files.forEach(file => {
-                const fileSize = fileSizes[file.id];
-                if (fileSize !== null && fileSize <= 25000 && !initializedFiles.includes(file.id)) {
-                    const checkScriptLoaded = () => {
-                        if (window.StlViewer) {
-                            // Initialiser le visualiseur pour chaque fichier qui respecte la limite de taille
-                            loadingStatus[file.id] = true; // Marquer comme en cours de chargement
 
-                            new window.StlViewer(
-                                document.getElementById(`stl_cont_${file.id}`),
-                                {
-                                    models: [{ id: file.id, filename: `http://localhost:8000/assets/uploads/models/${model.user.email}/${model.slug}/${file.name}` }]
-                                }
-                            );
-
-                            // Utiliser MutationObserver pour surveiller le DOM
-                            const observer = new MutationObserver((mutations) => {
-                                mutations.forEach(mutation => {
-                                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                                        setInitializedFiles(prevFiles => [...prevFiles, file.id]);
-                                        loadingStatus[file.id] = false;
-                                        if (Object.values(loadingStatus).every(status => status === false)) {
-                                            setLoadingFiles(false);
-                                        }
-                                    }
-                                });
-                            });
-                            
-                            observer.observe(document.getElementById(`stl_cont_${file.id}`), { childList: true });
-                            
-                            // Déconnecter l'observateur lorsqu'il n'est plus nécessaire.
-                            return () => observer.disconnect();
-                            
-                        } else {
-                            setTimeout(checkScriptLoaded, 100);
-                        }
-                    };
-                    checkScriptLoaded();
-                }
-            });
-        }
-    }, [model, fileSizes, initializedFiles]);
-// Modifier le fonctionnement du carousel (voir pourquoi il faut tourner le carousel pour lancer l'affichage du modele 3d) / adapter le code dans les differentes pages et sur l'api
+// adapter le code dans les differentes pages et sur l'api / voir code taille de fichiers ci-dessus
 
     return (
         <div>
@@ -126,21 +79,7 @@ export function ModelDetails () {
                             <h3 className="header center">{ model.title }</h3>
                             <div className='card-image'>
                                 <div className="col s12 m4 l2"></div>
-                                <Carousel images={imageUrls} files={filteredFiles} loadingFiles={loadingFiles} />
-                                {/* <div className="carousel carousel-slider center col s12 m4 l8 center"> */}
-                                    {/* {model.images.map(image => ( */}
-                                        {/* <div key={image.id} className='carousel-item'> */}
-                                            {/* <img key={image.id} src={'http://localhost:8000/assets/uploads/models/' + image.name} alt={image.name} /> */}
-                                        {/* </div> */}
-                                    {/* ))} */}
-                                    {/* {model.files.map(file => ( */}
-                                        {/* fileSizes[file.id] !== null && fileSizes[file.id] <= 25000 && ( */}
-                                            {/* <div key={file.id} id={`stl_cont_${file.id}`} className={model.images.length > 0 ? 'carousel-item' : 'carousel-item active'} style={model.images.length > 0 ? {} : { zIndex: 0, opacity: 1, visibility: 'visible', transform: 'translateX(0px) translateX(0px) translateX(0px) translateZ(0px)' }}> */}
-                                                {/* {loadingFiles && <Loader />} Afficher le loader pendant le chargement */}
-                                            {/* </div> */}
-                                        {/* ) */}
-                                    {/* ))} */}
-                                {/* </div> */}
+                                <Carousel images={imageUrls} files={filteredFiles} />
                                 {isAdmin && (
                                     <Link to={`/models/edit/${model.id}`} className="btn btn-floating halfway-fab waves-effect waves-light">
                                         <i className="material-icons">edit</i>

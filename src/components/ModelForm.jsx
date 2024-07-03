@@ -212,7 +212,7 @@ export function ModelForm({model, isEditForm}) {
 
     const deleteFile = (id) => {
         const fileElement = document.getElementById(`file-${id}`);
-        FilesService.deleteFile(id).then(() => fileElement.remove())
+        FilesService.deleteFile(id, model.slug).then(() => fileElement.remove())
     }
 
     return (

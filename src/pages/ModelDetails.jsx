@@ -9,10 +9,9 @@ export function ModelDetails () {
     const [model, setModel] = useState(null);
     const { id } = useParams();
     const [isAdmin, setIsAdmin] = useState(false);
-    const [fileSizes, setFileSizes] = useState({}); // État pour stocker les tailles des fichiers
+    const [fileSizes, setFileSizes] = useState({});
 
     useEffect(() => {
-        // Met à jour le titre de la page
         document.title = model ? `${model.title} - Models 3D` : 'Chargement...';
     }, [model]);
 
@@ -67,8 +66,6 @@ export function ModelDetails () {
             });
         }
     }, [model]);
-
-// adapter le code dans les differentes pages et sur l'api / voir code taille de fichiers ci-dessus
 
     return (
         <div>

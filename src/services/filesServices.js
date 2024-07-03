@@ -2,7 +2,7 @@ export default class FilesService {
 
     static isDev = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development');
 
-    static deleteFile(id) {
+    static deleteFile(id, slug) {
         if(this.isDev) {
             const token = localStorage.getItem('token');
 
@@ -11,7 +11,8 @@ export default class FilesService {
                 headers: {
                     'Content-Type': 'application/json',
                     "Authorization": `Bearer ${token}`
-                }
+                },
+                body: JSON.stringify({slug})
             })
             .catch(error => this.handleError(error));
         }

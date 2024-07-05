@@ -1,6 +1,5 @@
 import './modelCard.css'
 import { useState } from "react";
-import { formatDate } from "../helpers/formatDate.js";
 import { useNavigate } from 'react-router-dom'
 
 export function ModelCard({ model, borderColor = '#ff7043' }) {
@@ -18,15 +17,20 @@ export function ModelCard({ model, borderColor = '#ff7043' }) {
         history(`/models/${id}`)
     }
 
-    return <div className="col s6 m3" onClick={() => goToModel(model.id)} onMouseEnter={showBorder} onMouseLeave={hideBorder}>
+    return <div className="col s12 m6 l3" onClick={() => goToModel(model.id)} onMouseEnter={showBorder} onMouseLeave={hideBorder}>
         <div className="card waves-effect waves-block waves-light stylizedBorder" style={{ borderColor: color }}>
             <div className="card-image">
-                {model.images.length > 0 && (
+                {model.images.length > 0 ? (
                     <img src={'http://localhost:8000/assets/uploads/models/mini/400x400-' + model.images[0].name} alt={model.title} />
-                )}
+                )
+                :
+                (
+                    <img src={'http://localhost:8000/assets/840298_1828.jpg'} alt={model.title} />
+                )
+                }
             </div>
-            <div className="card-content">
-                <span className="card-title">{model.title}</span>
+            <div className="content" style={{textAlign: 'center'}}>
+                <span className="card-title">{model.title.length > 25 ? (model.title.substring(0, 25) + '...') : (model.title)}</span>
             </div>
         </div>
     </div>

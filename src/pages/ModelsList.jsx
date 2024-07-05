@@ -41,7 +41,7 @@ export function ModelsList() {
 
     return <>
             { models.length > 0 ? (
-                <div className="container">
+                <div style={{margin: '0 auto', width: '85%'}}>
                     <div className="row">
                         {models.map(model => (
                             <ModelCard key={model.id} model={model} />

@@ -163,9 +163,11 @@ export function ModelForm({model, isEditForm}) {
         }
         else
         {
-            if(!/^[a-zA-Z0-9àçâéèô:\/ -.]{3,250}$/.test(form.title.value))
+            // if(!/^[a-zA-Z0-9àçâéèô:\/ -.]{3,250}$/.test(form.title.value))
+            if(form.title.value.length < 3 || form.title.value.length > 250)
             {
-                const errorMsg = 'Le titre du modèle contient un/des caractère(s) invalide (3-250).'
+                // const errorMsg = 'Le titre du modèle contient un/des caractère(s) invalide (3-250).'
+                const errorMsg = 'Le titre du modèle ne contient pas le nombre de caractères requis (3-250).'
                 const newField = { value: form.title.value, error: errorMsg, isValid: false }
                 newForm = { ...newForm, ...{ title: newField } }
             }
@@ -184,9 +186,11 @@ export function ModelForm({model, isEditForm}) {
         }
         else
         {
-            if(!/^[a-zA-Z0-9àçâéèô:\/ -.?\n]{10,1000}$/.test(form.description.value))
+            // if(!/^[a-zA-Z0-9àçâéèô:\/ -.?\n]{10,1000}$/.test(form.description.value))
+            if(form.description.value.length < 10 || form.description.value.length > 1000)
             {
-                const errorMsg = 'La description du modèle contient un/des caractère(s) invalide (10-1000).'
+                // const errorMsg = 'La description du modèle contient un/des caractère(s) invalide (10-1000).'
+                const errorMsg = 'Le description du modèle ne contient pas le nombre de caractères requis (10-1000).'
                 const newField = { value: form.description.value, error: errorMsg, isValid: false }
                 newForm = { ...newForm, ...{ description: newField } }
             }

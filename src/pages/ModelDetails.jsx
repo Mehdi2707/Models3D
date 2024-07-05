@@ -71,18 +71,17 @@ export function ModelDetails () {
         <div>
             { model ? (
                 <div className="row">
-                    <div className="col s12 m8 offset-m2">
+                    <div className='col l1'></div>
+                    <div className="col s12 m12 l10">
                         <div className="card hoverable">
                             <h3 className="header center">{ model.title }</h3>
                             <div className='card-image'>
-                                <div className="col s12 m4 l2"></div>
                                 <Carousel images={imageUrls} files={filteredFiles} />
                                 {isAdmin && (
                                     <Link to={`/models/edit/${model.id}`} className="btn btn-floating halfway-fab waves-effect waves-light">
                                         <i className="material-icons">edit</i>
                                     </Link>
                                 )}
-                                <div className="col s12 m4 l2"></div>
                             </div>
                             <div className="card-stacked">
                                 <div className="card-content">
@@ -125,6 +124,7 @@ export function ModelDetails () {
                             </div>
                         </div>
                     </div>
+                    <div className='col l1'></div>
                 </div>
             ) : (
                 <h4 className="center"><Loader /></h4>

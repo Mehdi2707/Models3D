@@ -59,7 +59,7 @@ const Carousel = ({ images, files }) => {
         <Slide
           key={index}
           content={
-            <div id={`stl_cont_${file.id}`}></div>
+            <div id={`stl_cont_${file.id}`} style={{height: '25rem'}}></div>
           }
           isActive={index === currentIndex}
         />
